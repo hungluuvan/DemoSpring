@@ -1,13 +1,16 @@
 package com.mor.backend.entity;
 
 
+import com.mor.backend.common.Provider;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.HashSet;
@@ -40,6 +43,10 @@ public class User {
     @NotBlank
     @Size(max = 120)
     private String password;
+    @NotNull
+    private Boolean isAdmin;
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
@@ -52,10 +59,11 @@ public class User {
     private Collection<Address> addresses;
 
 
-    public User(String username, String email, String password) {
+    public User(String username, String email, String password,Boolean isAdmin) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.isAdmin = isAdmin;
     }
 
 
