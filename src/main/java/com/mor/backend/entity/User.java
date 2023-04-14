@@ -1,11 +1,10 @@
 package com.mor.backend.entity;
 
 
-import com.mor.backend.common.Provider;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -23,7 +22,8 @@ import java.util.Set;
                 @UniqueConstraint(columnNames = "username"),
                 @UniqueConstraint(columnNames = "email")
         })
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -32,9 +32,11 @@ public class User {
     private Long id;
 
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 50)
     private String username;
-
+    @NotBlank
+    @Size(max = 30)
+    private String name;
     @NotBlank
     @Size(max = 50)
     @Email
@@ -45,10 +47,11 @@ public class User {
     private String password;
     @NotNull
     private Boolean isAdmin;
+    @NotNull
     @Enumerated(EnumType.STRING)
-    private Provider provider;
-
-    @ManyToMany(fetch = FetchType.LAZY)
+    private AuthProvider provider;
+    private String providerId;
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -59,11 +62,13 @@ public class User {
     private Collection<Address> addresses;
 
 
-    public User(String username, String email, String password,Boolean isAdmin) {
+    public User(String username, String email, String name, String password, Boolean isAdmin, AuthProvider provider) {
         this.username = username;
         this.email = email;
+        this.name = name;
         this.password = password;
         this.isAdmin = isAdmin;
+        this.provider = provider;
     }
 
 

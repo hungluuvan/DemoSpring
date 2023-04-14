@@ -2,16 +2,21 @@ package com.mor.backend.services.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mor.backend.entity.User;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-public class UserDetailsImpl implements UserDetails {
+@Getter
+@Setter
+public class UserDetailsImpl implements OAuth2User, UserDetails {
     private static final long serialVersionUID = 1L;
 
     private final Long id;
@@ -24,6 +29,7 @@ public class UserDetailsImpl implements UserDetails {
     private final String password;
 
     private final Collection<? extends GrantedAuthority> authorities;
+    private Map<String, Object> attributes;
 
     public UserDetailsImpl(Long id, String username, String email, String password,
                            Collection<? extends GrantedAuthority> authorities) {
@@ -47,22 +53,10 @@ public class UserDetailsImpl implements UserDetails {
                 authorities);
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
+    public static UserDetailsImpl build(User user, Map<String, Object> attributes) {
+        UserDetailsImpl userDetails = UserDetailsImpl.build(user);
+        userDetails.setAttributes(attributes);
+        return userDetails;
     }
 
     @Override
@@ -91,12 +85,7 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        UserDetailsImpl user = (UserDetailsImpl) o;
-        return Objects.equals(id, user.id);
+    public String getName() {
+        return String.valueOf(id);
     }
 }
