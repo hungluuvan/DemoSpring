@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     @NotBlank
     private String streetName;

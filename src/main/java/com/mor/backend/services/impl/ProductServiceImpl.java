@@ -1,13 +1,14 @@
 package com.mor.backend.services.impl;
 
 import com.mor.backend.entity.Product;
+import com.mor.backend.exeptions.NotFoundException;
 import com.mor.backend.payload.request.ProductRequest;
 import com.mor.backend.payload.response.ProductResponse;
 import com.mor.backend.repositories.ProductRepository;
 import com.mor.backend.services.ProductService;
 import com.mor.backend.util.ImageUpload;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,19 +20,17 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
-    @Autowired
-    ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-    @Autowired
-    ImageUpload imageUpload;
+    private final ImageUpload imageUpload;
 
-    @Autowired
-    ModelMapper mapper;
+    private final ModelMapper mapper;
 
     @Override
-    public Optional<Product> detailProduct(Long id) {
-        return productRepository.findById(id);
+    public Optional<Product> detailProduct(long id) {
+        return Optional.ofNullable(Optional.ofNullable(productRepository.findById(id)).orElseThrow(() -> new NotFoundException("Product with id " + id + " not found")));
 
     }
 
@@ -41,7 +40,6 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteById(id);
     }
 
-    @Override
     public List<ProductResponse> getAllProduct(String name) {
         List<Product> products;
         if (name != null) {
@@ -80,7 +78,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public ProductResponse updateProduct(Product product, ProductRequest productRequest, MultipartFile imageProduct) throws IOException {
+    public ProductResponse updateProduct(long id, ProductRequest productRequest, MultipartFile imageProduct) throws IOException {
+        Product product = Optional.ofNullable(productRepository.findById(id)).orElseThrow(() -> new NotFoundException("Product with id " + id + " not found "));
         if (imageProduct == null) {
             product.setImage(product.getImage());
         } else {
@@ -95,7 +94,6 @@ public class ProductServiceImpl implements ProductService {
         product.setMadeIn(productRequest.getMadeIn());
         productRepository.save(product);
         return mapper.map(product, ProductResponse.class);
-
     }
 
 

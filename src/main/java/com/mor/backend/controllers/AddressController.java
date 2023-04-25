@@ -6,7 +6,7 @@ import com.mor.backend.payload.response.AddressResponse;
 import com.mor.backend.payload.response.ObjectResponse;
 import com.mor.backend.services.AddressService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +18,11 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+@AllArgsConstructor
 @SecurityRequirement(name = "demo")
 @RequestMapping("/api/v1/")
 public class AddressController {
-    @Autowired
-    AddressService addressService;
+    private final AddressService addressService;
 
     @PostMapping("/addresses")
     public ResponseEntity<?> createAddress(HttpServletRequest request, @Valid @RequestBody AddressRequest addressRequest) {
@@ -49,14 +49,8 @@ public class AddressController {
 
     @PutMapping("/addresses/{id}")
     public ResponseEntity<?> updateAddress(@PathVariable("id") long id, @Valid @RequestBody AddressRequest addressRequest) {
-        Optional<Address> addressData = addressService.detailAddress(id);
-        if (addressData.isPresent()) {
-            Address addressChange = addressData.get();
-            AddressResponse result = addressService.updateAddress(addressChange, addressRequest);
+            AddressResponse result = addressService.updateAddress(id, addressRequest);
             return new ResponseEntity<>(new ObjectResponse("200", "OK", result), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new ObjectResponse("204", "Not Found", ""), HttpStatus.NOT_FOUND);
-        }
     }
 
 }

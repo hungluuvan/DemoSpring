@@ -5,7 +5,7 @@ import com.mor.backend.config.AppProperties;
 import com.mor.backend.exeptions.BadRequestException;
 import com.mor.backend.util.CookieUtils;
 import com.mor.backend.util.jwt.Jwt;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -22,6 +22,7 @@ import static com.mor.backend.util.oauth2.HttpCookieOAuth2AuthorizationRequestRe
 
 
 @Component
+@AllArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final Jwt tokenProvider;
@@ -29,15 +30,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final AppProperties appProperties;
 
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
-
-
-    @Autowired
-    OAuth2AuthenticationSuccessHandler(Jwt tokenProvider, AppProperties appProperties,
-                                       HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
-        this.tokenProvider = tokenProvider;
-        this.appProperties = appProperties;
-        this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
-    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {

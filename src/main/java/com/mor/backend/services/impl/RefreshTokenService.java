@@ -4,7 +4,6 @@ import com.mor.backend.entity.RefreshToken;
 import com.mor.backend.exeptions.TokenRefreshException;
 import com.mor.backend.repositories.RefreshTokenRepository;
 import com.mor.backend.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +16,13 @@ import java.util.UUID;
 public class RefreshTokenService {
     @Value("${demo.app.jwtRefreshExpirationMs}")
     private Long refreshTokenDurationMs;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    public RefreshTokenService(RefreshTokenRepository refreshTokenRepository, UserRepository userRepository) {
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.userRepository = userRepository;
+    }
 
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);

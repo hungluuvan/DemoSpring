@@ -1,4 +1,4 @@
-package com.mor.backend.entity;
+package com.mor.backend.common;
 
 public enum AuthProvider {
     local,

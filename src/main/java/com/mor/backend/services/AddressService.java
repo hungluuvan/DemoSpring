@@ -12,7 +12,7 @@ public interface AddressService {
 
     List<AddressResponse> getAddressByUser(String user);
 
-    AddressResponse updateAddress(Address address, AddressRequest addressRequest);
+    AddressResponse updateAddress(long id , AddressRequest addressRequest);
 
     Optional<Address> detailAddress(Long id);
 }

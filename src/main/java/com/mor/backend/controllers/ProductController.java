@@ -6,11 +6,11 @@ import com.mor.backend.payload.request.ProductRequest;
 import com.mor.backend.payload.response.ObjectResponse;
 import com.mor.backend.payload.response.ProductResponse;
 import com.mor.backend.services.ProductService;
-import com.mor.backend.services.impl.UserDetailsServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,20 +22,19 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+@AllArgsConstructor
 @SecurityRequirement(name = "demo")
 @RequestMapping("/api/v1/")
 public class ProductController {
-    @Autowired
-    private ProductService productService;
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+
+    private final ProductService productService;
+
 
     @GetMapping("products")
     public ResponseEntity<ObjectResponse> getAllProduct(@RequestParam(required = false) String name) {
         try {
 
             List<ProductResponse> products = new ArrayList<>(productService.getAllProduct(name));
-
             if (products.isEmpty()) {
                 return new ResponseEntity<>(new ObjectResponse("204", "Don't have any products", products), HttpStatus.NO_CONTENT);
             }
@@ -54,6 +53,7 @@ public class ProductController {
                 .orElseGet(() -> new ResponseEntity<>(new ObjectResponse("204", "OK", ""), HttpStatus.NO_CONTENT));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("products")
     public ResponseEntity<?> createProduct(@RequestParam(value = "imageProduct", required = false) MultipartFile imageProduct, @Valid @ModelAttribute ProductRequest productRequest
     ) {
@@ -63,19 +63,14 @@ public class ProductController {
 
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("products/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable("id") long id, @RequestParam(value = "imageProduct") MultipartFile imageProduct, @Valid @ModelAttribute ProductRequest productRequest) throws IOException {
-        Optional<Product> productData = productService.detailProduct(id);
-
-        if (productData.isPresent()) {
-            Product productChange = productData.get();
-            ProductResponse result = productService.updateProduct(productChange, productRequest, imageProduct);
-            return new ResponseEntity<>(new ObjectResponse("200", "OK", result), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new ObjectResponse("204", "Not Found", ""), HttpStatus.NOT_FOUND);
-        }
+        ProductResponse result = productService.updateProduct(id, productRequest, imageProduct);
+        return new ResponseEntity<>(new ObjectResponse("200", "OK", result), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("products/{id}")
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable("id") long id) {
         try {

@@ -1,7 +1,7 @@
 package com.mor.backend.controllers;
 
 import com.mor.backend.common.ERole;
-import com.mor.backend.entity.AuthProvider;
+import com.mor.backend.common.AuthProvider;
 import com.mor.backend.entity.RefreshToken;
 import com.mor.backend.entity.Role;
 import com.mor.backend.entity.User;
@@ -15,10 +15,11 @@ import com.mor.backend.payload.response.ObjectResponse;
 import com.mor.backend.payload.response.TokenRefreshResponse;
 import com.mor.backend.repositories.RoleRepository;
 import com.mor.backend.repositories.UserRepository;
+import com.mor.backend.services.CartService;
 import com.mor.backend.services.impl.RefreshTokenService;
 import com.mor.backend.services.impl.UserDetailsImpl;
 import com.mor.backend.util.jwt.Jwt;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,24 +39,20 @@ import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/v1/auth")
 public class AuthController {
-    @Autowired
-    AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
-    @Autowired
-    PasswordEncoder encoder;
+    private final PasswordEncoder encoder;
 
-    @Autowired
-    Jwt jwtUtils;
-    @Autowired
-    RefreshTokenService refreshTokenService;
+    private final Jwt jwtUtils;
+    private final RefreshTokenService refreshTokenService;
+    private final CartService cartService;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -109,6 +106,7 @@ public class AuthController {
         roles.add(userRole);
         user.setRoles(roles);
         userRepository.save(user);
+        cartService.createCartWithCurrentUser(user);
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 

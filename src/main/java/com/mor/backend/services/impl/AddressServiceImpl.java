@@ -7,24 +7,24 @@ import com.mor.backend.payload.response.AddressResponse;
 import com.mor.backend.repositories.AddressRepository;
 import com.mor.backend.repositories.UserRepository;
 import com.mor.backend.services.AddressService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import  com.mor.backend.exeptions.NotFoundException;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class AddressServiceImpl implements AddressService {
-    @Autowired
-    AddressRepository addressRepository;
 
-    @Autowired
-    ModelMapper mapper;
-    @Autowired
-    UserRepository userRepository;
+    private final AddressRepository addressRepository;
+    private final ModelMapper mapper;
+    private final UserRepository userRepository;
+
 
     @Override
     public AddressResponse createAddress(AddressRequest addressRequest, String username) {
@@ -35,7 +35,7 @@ public class AddressServiceImpl implements AddressService {
         address.setCountry(addressRequest.getCountry());
         address.setWard(addressRequest.getWard());
         address.setStreetName(addressRequest.getStreetName());
-        address.setUser(user.get());
+        address.setUser(user.orElse(null));
         addressRepository.save(address);
         return mapper.map(address, AddressResponse.class);
     }
@@ -43,12 +43,18 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public List<AddressResponse> getAddressByUser(String username) {
         Optional<User> user = userRepository.findByUsername(username);
-        return addressRepository.findAllByUser(user.get()).stream().map(address -> mapper.map(address, AddressResponse.class)).collect(Collectors.toList());
+        return user.map(value -> addressRepository
+                .findAllByUser(value).stream()
+                .map(address -> mapper.map(address, AddressResponse.class))
+                .collect(Collectors.toList())).orElse(null);
     }
 
     @Transactional
     @Override
-    public AddressResponse updateAddress(Address address, AddressRequest addressRequest) {
+    public AddressResponse updateAddress(long id, AddressRequest addressRequest) {
+        Address address = Optional.ofNullable(addressRepository.findById(id)).orElseThrow(()->
+                new NotFoundException("Address with " + id + " not found ")
+                );
         address.setStreetName(addressRequest.getStreetName());
         address.setCity(addressRequest.getCity());
         address.setCountry(addressRequest.getCountry());

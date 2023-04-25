@@ -2,16 +2,16 @@ package com.mor.backend.util.oauth2;
 
 
 import com.mor.backend.common.ERole;
-import com.mor.backend.entity.AuthProvider;
+import com.mor.backend.common.AuthProvider;
 import com.mor.backend.entity.Role;
 import com.mor.backend.entity.User;
 import com.mor.backend.exeptions.OAuth2AuthenticationProcessingException;
 import com.mor.backend.repositories.RoleRepository;
 import com.mor.backend.repositories.UserRepository;
+import com.mor.backend.services.CartService;
 import com.mor.backend.services.impl.UserDetailsImpl;
 import com.mor.backend.util.oauth2.user.OAuth2UserInfo;
 import com.mor.backend.util.oauth2.user.OAuth2UserInfoFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,10 +29,17 @@ import java.util.Set;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
+
+    private final UserRepository userRepository;
+
+    private final RoleRepository roleRepository;
+    private final CartService cartService;
+
+    public CustomOAuth2UserService(UserRepository userRepository, RoleRepository roleRepository, CartService cartService) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.cartService = cartService;
+    }
 
     PasswordEncoder bpasswordEncoder = new BCryptPasswordEncoder();
 
@@ -52,7 +59,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
-        if (StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
+        if (!StringUtils.hasLength(oAuth2UserInfo.getEmail())) {
             throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
         }
 
@@ -93,6 +100,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         roles.add(userRole);
         user.setRoles(roles);
         userRepository.save(user);
+        cartService.createCartWithCurrentUser(user);
         return userRepository.save(user);
     }
 

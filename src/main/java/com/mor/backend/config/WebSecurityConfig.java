@@ -7,10 +7,9 @@ import com.mor.backend.util.oauth2.CustomOAuth2UserService;
 import com.mor.backend.util.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.mor.backend.util.oauth2.OAuth2AuthenticationFailureHandler;
 import com.mor.backend.util.oauth2.OAuth2AuthenticationSuccessHandler;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -24,23 +23,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 
 @Configuration
+@AllArgsConstructor
 @EnableGlobalMethodSecurity(
 
         prePostEnabled = true)
 public class WebSecurityConfig {
 
-    @Autowired
-    UserDetailsServiceImpl userDetailsService;
-    @Autowired
-    private CustomOAuth2UserService customOAuth2UserService;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
-    @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
-    @Autowired
-    private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final AuthEntryPointJwt unauthorizedHandler;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
-    @Autowired
-    private OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -80,14 +75,13 @@ public class WebSecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/api/v1/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/auth/**", "/oauth2/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/v1/products**").access("hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.PUT, "/api/v1/products**").access("hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.DELETE, "/api/v1/products**").access("hasRole('ROLE_ADMIN')")
+//                .antMatchers(HttpMethod.POST, "/api/v1/products**").access("hasRole('ROLE_ADMIN')")
+//                .antMatchers(HttpMethod.PUT, "/api/v1/products**").access("hasRole('ROLE_ADMIN')")
+//                .antMatchers(HttpMethod.DELETE, "/api/v1/products**").access("hasRole('ROLE_ADMIN')")
                 .anyRequest().authenticated()
                 .and()
                 .oauth2Login()
                 .authorizationEndpoint()
-//                .baseUri("/oauth2/authorize")
                 .authorizationRequestRepository(cookieAuthorizationRequestRepository())
                 .and()
                 .redirectionEndpoint()

@@ -1,7 +1,7 @@
 package com.mor.backend.util.oauth2.user;
 
 
-import com.mor.backend.entity.AuthProvider;
+import com.mor.backend.common.AuthProvider;
 import com.mor.backend.exeptions.OAuth2AuthenticationProcessingException;
 
 import java.util.Map;
