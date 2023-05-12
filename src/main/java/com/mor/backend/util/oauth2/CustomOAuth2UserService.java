@@ -1,8 +1,8 @@
 package com.mor.backend.util.oauth2;
 
 
-import com.mor.backend.common.ERole;
 import com.mor.backend.common.AuthProvider;
+import com.mor.backend.common.ERole;
 import com.mor.backend.entity.Role;
 import com.mor.backend.entity.User;
 import com.mor.backend.exeptions.OAuth2AuthenticationProcessingException;

@@ -49,8 +49,8 @@ public class AddressController {
 
     @PutMapping("/addresses/{id}")
     public ResponseEntity<?> updateAddress(@PathVariable("id") long id, @Valid @RequestBody AddressRequest addressRequest) {
-            AddressResponse result = addressService.updateAddress(id, addressRequest);
-            return new ResponseEntity<>(new ObjectResponse("200", "OK", result), HttpStatus.OK);
+        AddressResponse result = addressService.updateAddress(id, addressRequest);
+        return new ResponseEntity<>(new ObjectResponse("200", "OK", result), HttpStatus.OK);
     }
 
 }

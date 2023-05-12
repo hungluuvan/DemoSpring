@@ -1,6 +1,7 @@
 package com.mor.backend.entity;
 
 
+import com.mor.backend.common.AuthProvider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -61,6 +62,10 @@ public class User {
 
     private Collection<Address> addresses;
 
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cart_id", referencedColumnName = "id")
+    private Cart cart;
 
     public User(String username, String email, String name, String password, Boolean isAdmin, AuthProvider provider) {
         this.username = username;

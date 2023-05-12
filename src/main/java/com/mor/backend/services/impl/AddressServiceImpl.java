@@ -2,6 +2,7 @@ package com.mor.backend.services.impl;
 
 import com.mor.backend.entity.Address;
 import com.mor.backend.entity.User;
+import com.mor.backend.exeptions.NotFoundException;
 import com.mor.backend.payload.request.AddressRequest;
 import com.mor.backend.payload.response.AddressResponse;
 import com.mor.backend.repositories.AddressRepository;
@@ -11,7 +12,6 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import  com.mor.backend.exeptions.NotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,9 +52,9 @@ public class AddressServiceImpl implements AddressService {
     @Transactional
     @Override
     public AddressResponse updateAddress(long id, AddressRequest addressRequest) {
-        Address address = Optional.ofNullable(addressRepository.findById(id)).orElseThrow(()->
+        Address address = Optional.ofNullable(addressRepository.findById(id)).orElseThrow(() ->
                 new NotFoundException("Address with " + id + " not found ")
-                );
+        );
         address.setStreetName(addressRequest.getStreetName());
         address.setCity(addressRequest.getCity());
         address.setCountry(addressRequest.getCountry());

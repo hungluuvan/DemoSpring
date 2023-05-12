@@ -1,7 +1,7 @@
 package com.mor.backend.controllers;
 
-import com.mor.backend.common.ERole;
 import com.mor.backend.common.AuthProvider;
+import com.mor.backend.common.ERole;
 import com.mor.backend.entity.RefreshToken;
 import com.mor.backend.entity.Role;
 import com.mor.backend.entity.User;
