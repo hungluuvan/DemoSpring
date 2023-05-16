@@ -41,7 +41,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         this.cartService = cartService;
     }
 
-    PasswordEncoder bpasswordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder bpasswordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) {

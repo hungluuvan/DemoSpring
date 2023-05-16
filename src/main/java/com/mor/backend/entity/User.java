@@ -58,7 +58,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 
     private Collection<Address> addresses;
 
@@ -66,6 +66,9 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private Cart cart;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private Set<OrderProduct> orders;
 
     public User(String username, String email, String name, String password, Boolean isAdmin, AuthProvider provider) {
         this.username = username;

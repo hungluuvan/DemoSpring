@@ -14,7 +14,7 @@ import javax.validation.constraints.Min;
 @NoArgsConstructor
 public class CartItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Min(1)
     private int cartItemQuantity;
@@ -28,4 +28,8 @@ public class CartItem {
     private Cart cart;
     @Column(columnDefinition = "boolean default false")
     private boolean isOrdered;
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "order_id",referencedColumnName = "id")
+    private OrderProduct order;
 }

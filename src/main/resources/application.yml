@@ -7,8 +7,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        format_sql: true
     hibernate:
       ddl-auto: update
+    show-sql: true
   security:
     oauth2:
       client:
@@ -27,7 +29,17 @@ spring:
             user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
             user-name-attribute: sub
 
-debug: true
+#debug: true
+logging:
+  file:
+    name: log/dev.log
+  level:
+    org:
+      hibernate:
+        type : trace
+#    com.mor.backend.controllers : debug
+#    web: debug
+#    sql: debug
 demo:
   app:
     jwtSecret: $^x#b9WJr?2viqpL*ky*`#$>7NY~>4nEF?Nz:14W{Uk6~Dg;Xs@At)AEaB30uS
@@ -40,6 +52,5 @@ demo:
       # After successfully authenticating with the OAuth2 Provider,
       # we'll be generating an auth token for the user and sending the token to the
       # redirectUri mentioned by the frontend client in the /oauth2/authorize request.
-      # We're not using cookies because they won't work well in mobile clients.
       authorizedRedirectUris:
         - http://localhost:8000/oauth2/redirect

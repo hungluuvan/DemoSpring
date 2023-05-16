@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AddressService {
+
     AddressResponse createAddress(AddressRequest addressRequest, String user);
 
     List<AddressResponse> getAddressByUser(String user);
