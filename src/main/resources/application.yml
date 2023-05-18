@@ -8,9 +8,11 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
         format_sql: true
+#        generate_statistics: true
     hibernate:
       ddl-auto: update
     show-sql: true
+
   security:
     oauth2:
       client:
@@ -28,7 +30,6 @@ spring:
             token-uri: https://oauth2.googleapis.com/token
             user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
             user-name-attribute: sub
-
 #debug: true
 logging:
   file:
@@ -36,9 +37,9 @@ logging:
   level:
     org:
       hibernate:
-        type : trace
+        type: trace
 #    com.mor.backend.controllers : debug
-#    web: debug
+    web: debug
 #    sql: debug
 demo:
   app:

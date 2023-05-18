@@ -1,6 +1,7 @@
 package com.mor.backend.services.impl;
 
 import com.mor.backend.entity.RefreshToken;
+import com.mor.backend.exeptions.NotFoundException;
 import com.mor.backend.exeptions.TokenRefreshException;
 import com.mor.backend.repositories.RefreshTokenRepository;
 import com.mor.backend.repositories.UserRepository;
@@ -31,7 +32,8 @@ public class RefreshTokenService {
     public RefreshToken createRefreshToken(Long userId) {
         RefreshToken refreshToken = new RefreshToken();
 
-        refreshToken.setUser(userRepository.findById(userId).get());
+        refreshToken.setUser(userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException("User not found")));
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
         refreshToken.setToken(UUID.randomUUID().toString());
 
@@ -50,6 +52,7 @@ public class RefreshTokenService {
 
     @Transactional
     public int deleteByUserId(Long userId) {
-        return refreshTokenRepository.deleteByUser(userRepository.findById(userId).get());
+        return refreshTokenRepository.deleteByUser(userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException("User not found")));
     }
 }

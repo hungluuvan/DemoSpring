@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ObjectResponse {
-    private String errorCode;
-    private String errorMessage;
-    private Object data;
+public class PaginationResponse {
+    private Object contents;
+    private long currentPage;
+    private long totalItems;
+    private long totalPages;
 
 }

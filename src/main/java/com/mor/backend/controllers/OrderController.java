@@ -1,5 +1,6 @@
 package com.mor.backend.controllers;
 
+import com.mor.backend.common.Message;
 import com.mor.backend.entity.OrderProduct;
 import com.mor.backend.payload.request.OrderRequest;
 import com.mor.backend.payload.response.ObjectResponse;
@@ -22,34 +23,34 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<?> getOrderByUser(HttpServletRequest request) {
+    public ResponseEntity<ObjectResponse> getOrderByUser(HttpServletRequest request) {
         String username = request.getUserPrincipal().getName();
         List<OrderProduct> orderProducts = orderService.getOrderByUser(username);
         if (!orderProducts.isEmpty()) {
-            return new ResponseEntity<>(new ObjectResponse("200", "success", orderProducts), HttpStatus.OK);
+            return new ResponseEntity<>(new ObjectResponse("200", Message.SUCCESS, orderProducts), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(new ObjectResponse("204", "success", orderProducts), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(new ObjectResponse("204", Message.SUCCESS, orderProducts), HttpStatus.NO_CONTENT);
         }
 
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createOrder(@RequestBody OrderRequest orderRequest, HttpServletRequest request) {
+    public ResponseEntity<ObjectResponse> createOrder(@RequestBody OrderRequest orderRequest, HttpServletRequest request) {
         String username = request.getUserPrincipal().getName();
         OrderProduct orderProduct = orderService.createOrder(orderRequest, username);
-        return new ResponseEntity<>(new ObjectResponse("200", "success", orderProduct), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ObjectResponse("200", (HttpStatus.OK).toString(), orderProduct), HttpStatus.CREATED);
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<?> cancelOrder(@PathVariable long id) {
+    public ResponseEntity<ObjectResponse> cancelOrder(@PathVariable long id) {
         orderService.cancelOrder(id);
-        return new ResponseEntity<>(new ObjectResponse("200", "success", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ObjectResponse("200", (HttpStatus.OK).toString(), null), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOrderById(@PathVariable long id) {
+    public ResponseEntity<ObjectResponse> getOrderById(@PathVariable long id) {
         OrderProduct orderProduct = orderService.getOrderById(id);
-        return new ResponseEntity<>(new ObjectResponse("200", "success", orderProduct), HttpStatus.OK);
+        return new ResponseEntity<>(new ObjectResponse("200", (HttpStatus.OK).toString(), orderProduct), HttpStatus.OK);
     }
 
 }

@@ -20,7 +20,6 @@ import com.mor.backend.services.impl.RefreshTokenService;
 import com.mor.backend.services.impl.UserDetailsImpl;
 import com.mor.backend.util.jwt.Jwt;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -56,7 +55,7 @@ public class AuthController {
     private final CartService cartService;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -72,7 +71,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
         }
@@ -99,7 +98,7 @@ public class AuthController {
     }
 
     @PostMapping("/refreshtoken")
-    public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
+    public ResponseEntity<TokenRefreshResponse> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
 
         return refreshTokenService.findByToken(requestRefreshToken).map(refreshTokenService::verifyExpiration).map(RefreshToken::getUser).map(user -> {
@@ -109,7 +108,7 @@ public class AuthController {
     }
 
     @GetMapping("/google")
-    public ResponseEntity<?> googleLogin(@RequestParam("access_token") String token) {
+    public ResponseEntity<ObjectResponse> googleLogin(@RequestParam("access_token") String token) {
 
         return new ResponseEntity<>(new ObjectResponse("200", "", token), HttpStatus.OK);
     }

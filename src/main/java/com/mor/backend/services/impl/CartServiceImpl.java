@@ -55,7 +55,7 @@ class CartServiceImpl implements CartService {
         CartItem cartItem = cartItemService.createCartItem(cartRequest);
         cartItem.setCart(cart);
         List<CartItem> cartItems = cart.getCartItems();
-        if (cartItems.size() == 0) {
+        if (cartItems.isEmpty()) {
             cartItems = new ArrayList<>();
             cartItems.add(cartItem);
         } else {

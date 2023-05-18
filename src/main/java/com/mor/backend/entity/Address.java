@@ -28,7 +28,7 @@ public class Address {
     @NotBlank
     private String ward;
 
-    @ManyToOne( fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
     private User user;

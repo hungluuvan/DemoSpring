@@ -74,7 +74,7 @@ public class WebSecurityConfig {
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/api/v1/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/auth/**", "/oauth2/**").permitAll()
+                .authorizeRequests().antMatchers("/actuator/*","/api/v1/products/files/**", "/api/v1/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/auth/**", "/oauth2/**").permitAll()
 //                .antMatchers(HttpMethod.POST, "/api/v1/products**").access("hasRole('ROLE_ADMIN')")
 //                .antMatchers(HttpMethod.PUT, "/api/v1/products**").access("hasRole('ROLE_ADMIN')")
 //                .antMatchers(HttpMethod.DELETE, "/api/v1/products**").access("hasRole('ROLE_ADMIN')")

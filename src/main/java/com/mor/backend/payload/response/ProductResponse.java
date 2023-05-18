@@ -17,5 +17,5 @@ public class ProductResponse {
     private String description;
 
     private String madeIn;
-    private String image;
+    private String urlImage;
 }

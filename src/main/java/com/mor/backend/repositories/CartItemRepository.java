@@ -1,7 +1,6 @@
 package com.mor.backend.repositories;
 
 import com.mor.backend.entity.CartItem;
-import com.mor.backend.entity.OrderProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

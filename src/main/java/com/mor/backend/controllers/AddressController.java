@@ -7,7 +7,6 @@ import com.mor.backend.payload.response.ObjectResponse;
 import com.mor.backend.services.AddressService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +25,7 @@ public class AddressController {
     private final AddressService addressService;
 
     @PostMapping("/addresses")
-    public ResponseEntity<?> createAddress(HttpServletRequest request, @Valid @RequestBody AddressRequest addressRequest) {
+    public ResponseEntity<ObjectResponse> createAddress(HttpServletRequest request, @Valid @RequestBody AddressRequest addressRequest) {
         String username = request.getUserPrincipal().getName();
         AddressResponse address = addressService.createAddress(addressRequest, username);
         return new ResponseEntity<>(new ObjectResponse("201", "Success", address), HttpStatus.CREATED);
@@ -34,7 +33,7 @@ public class AddressController {
     }
 
     @GetMapping("/addresses")
-    public ResponseEntity<?> getAddressByUser(HttpServletRequest request) {
+    public ResponseEntity<ObjectResponse> getAddressByUser(HttpServletRequest request) {
         String username = request.getUserPrincipal().getName();
         List<AddressResponse> addresses = addressService.getAddressByUser(username);
         return new ResponseEntity<>(new ObjectResponse("200", "Success", addresses), HttpStatus.OK);
@@ -42,14 +41,14 @@ public class AddressController {
     }
 
     @GetMapping("/addresses/{id}")
-    public ResponseEntity<?> getDetailAddress(@PathVariable("id") long id) {
+    public ResponseEntity<ObjectResponse> getDetailAddress(@PathVariable("id") long id) {
         Optional<Address> address = addressService.detailAddress(id);
         return address.map(value -> new ResponseEntity<>(new ObjectResponse("200", "OK", value), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(new ObjectResponse("204", "OK", ""), HttpStatus.NO_CONTENT));
     }
 
     @PutMapping("/addresses/{id}")
-    public ResponseEntity<?> updateAddress(@PathVariable("id") long id, @Valid @RequestBody AddressRequest addressRequest) {
+    public ResponseEntity<ObjectResponse> updateAddress(@PathVariable("id") long id, @Valid @RequestBody AddressRequest addressRequest) {
         AddressResponse result = addressService.updateAddress(id, addressRequest);
         return new ResponseEntity<>(new ObjectResponse("200", "OK", result), HttpStatus.OK);
     }

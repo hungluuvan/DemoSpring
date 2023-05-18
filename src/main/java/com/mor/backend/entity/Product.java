@@ -28,16 +28,9 @@ public class Product {
     @NotBlank
     @Size(max = 50)
     private String madeIn;
-    @Lob
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private String image;
+    @NotBlank
+    private String urlImage;
 
-    public Product(String name, double price, String description, String madeIn, String image) {
-        this.name = name;
-        this.price = price;
-        this.description = description;
-        this.madeIn = madeIn;
-        this.image = image;
-    }
+
 
 }

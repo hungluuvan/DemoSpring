@@ -27,15 +27,14 @@ public class OrderProduct {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<CartItem> cartItems;
     @OneToOne
-    @JoinColumn(name = "address_id" , referencedColumnName = "id")
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address orderAddress;
-
 
 
 }

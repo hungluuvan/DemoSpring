@@ -7,7 +7,6 @@ import com.mor.backend.payload.response.ObjectResponse;
 import com.mor.backend.services.CartService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,21 +22,21 @@ public class CartController {
     private final CartService cartService;
 
     @GetMapping("")
-    public ResponseEntity<?> getCartByUser(HttpServletRequest request) {
+    public ResponseEntity<ObjectResponse> getCartByUser(HttpServletRequest request) {
         String username = request.getUserPrincipal().getName();
         Cart cart = cartService.getCartByUser(username);
         return new ResponseEntity<>(new ObjectResponse("200", "success", cart), HttpStatus.OK);
     }
 
     @PostMapping("")
-    public ResponseEntity<?> addProductToCart(@RequestBody CartRequest cartRequest, HttpServletRequest request) {
+    public ResponseEntity<ObjectResponse> addProductToCart(@RequestBody CartRequest cartRequest, HttpServletRequest request) {
         String username = request.getUserPrincipal().getName();
         Cart cart = cartService.addProductToCart(cartRequest, username);
         return new ResponseEntity<>(new ObjectResponse("200", "success", cart), HttpStatus.OK);
     }
 
     @PostMapping("/clear")
-    public ResponseEntity<?> clearProductInCart(@RequestBody ClearCartRequest clearCartRequest, HttpServletRequest request) {
+    public ResponseEntity<ObjectResponse> clearProductInCart(@RequestBody ClearCartRequest clearCartRequest, HttpServletRequest request) {
         String username = request.getUserPrincipal().getName();
         Cart cart = cartService.clearCart(username, clearCartRequest.getCartItemIds());
         return new ResponseEntity<>(new ObjectResponse("200", "success", cart), HttpStatus.OK);

@@ -30,6 +30,6 @@ public class CartItem {
     private boolean isOrdered;
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "order_id",referencedColumnName = "id")
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
     private OrderProduct order;
 }

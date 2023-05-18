@@ -13,7 +13,6 @@ import com.mor.backend.services.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -33,8 +32,10 @@ public class OrderServiceImpl implements OrderService {
         user.getCart().setCartTotal(user.getCart().getCartTotal() - cartItems.size());
         double total = cartItems.stream().mapToDouble(c -> c.getCartItemQuantity() + c.getProduct().getPrice()).sum();
         OrderProduct orderProduct = new OrderProduct();
-        cartItems.forEach(cartItem -> cartItem.setOrdered(true));
-        cartItems.forEach(cartItem -> cartItem.setOrder(orderProduct));
+        cartItems.forEach(cartItem -> {
+            cartItem.setOrdered(true);
+            cartItem.setOrder(orderProduct);
+        });
         orderProduct.setOrderAddress(orderRequest.getOrderAddress());
         orderProduct.setCartItems(cartItems);
         orderProduct.setOrderStatus(OrderStatus.SUCCESS);
@@ -61,7 +62,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderProduct getOrderById(long id) {
-        return Optional.ofNullable(orderRepository.findById(id)).orElseThrow(()->
+        return Optional.ofNullable(orderRepository.findById(id)).orElseThrow(() ->
                 new NotFoundException("Order with id " + id + " not found"));
     }
 }
