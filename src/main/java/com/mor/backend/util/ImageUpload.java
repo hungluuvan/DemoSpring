@@ -7,15 +7,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 
 @Component
 public class ImageUpload {
-    private final String UPLOAD_FOLDER = "D:\\Backend\\src\\ImageUpload";
+    private final String UPLOAD_FOLDER =  FileSystems.getDefault()
+            .getPath("")
+            .toAbsolutePath()
+            .toString() + "\\src\\ImageUpload" ;
+
     private final Path root = Paths.get("src\\ImageUpload");
+
     public boolean uploadImage(MultipartFile imageProduct) {
         boolean isUpload = false;
         try {
