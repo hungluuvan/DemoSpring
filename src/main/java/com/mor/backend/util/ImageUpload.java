@@ -1,5 +1,6 @@
 package com.mor.backend.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
@@ -11,11 +12,12 @@ import java.net.MalformedURLException;
 import java.nio.file.*;
 
 @Component
+@Slf4j
 public class ImageUpload {
     private final String UPLOAD_FOLDER = FileSystems.getDefault()
             .getPath("")
             .toAbsolutePath()
-            .toString() + "\\ImageUpload";
+            .toString() + "/ImageUpload";
 
     private final Path root = Paths.get("ImageUpload");
 
@@ -29,6 +31,7 @@ public class ImageUpload {
 
 
     public boolean uploadImage(MultipartFile imageProduct) {
+        log.info(UPLOAD_FOLDER);
         boolean isUpload = false;
         try {
             Files.copy(imageProduct.getInputStream(),
@@ -54,6 +57,7 @@ public class ImageUpload {
     }
 
     public Resource load(String filename) {
+        log.info(String.valueOf(root));
         try {
             Path file = root.resolve(filename);
             Resource resource = new UrlResource(file.toUri());
