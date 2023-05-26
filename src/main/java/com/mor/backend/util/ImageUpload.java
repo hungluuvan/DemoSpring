@@ -6,17 +6,27 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.*;
 
 @Component
 public class ImageUpload {
-    private final String UPLOAD_FOLDER =  FileSystems.getDefault()
+    private final String UPLOAD_FOLDER = FileSystems.getDefault()
             .getPath("")
             .toAbsolutePath()
-            .toString() + "\\src\\ImageUpload" ;
+            .toString() + "\\ImageUpload";
 
-    private final Path root = Paths.get("src\\ImageUpload");
+    private final Path root = Paths.get("ImageUpload");
+
+    public void init() {
+        File folder = new File(UPLOAD_FOLDER);
+
+        if (!folder.exists()) {
+            boolean created = folder.mkdirs();
+        }
+    }
+
 
     public boolean uploadImage(MultipartFile imageProduct) {
         boolean isUpload = false;

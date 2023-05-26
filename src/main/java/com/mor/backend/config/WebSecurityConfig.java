@@ -75,6 +75,7 @@ public class WebSecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/actuator/*", "/api/v1/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/auth/**", "/oauth2/**").permitAll()
+                .antMatchers("/api/v1/products/files/**").permitAll()
 //                .antMatchers(HttpMethod.POST, "/api/v1/products**").access("hasRole('ROLE_ADMIN')")
 //                .antMatchers(HttpMethod.PUT, "/api/v1/products**").access("hasRole('ROLE_ADMIN')")
 //                .antMatchers(HttpMethod.DELETE, "/api/v1/products**").access("hasRole('ROLE_ADMIN')")
