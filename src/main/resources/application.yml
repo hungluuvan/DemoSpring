@@ -1,14 +1,26 @@
 spring:
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 2525
+    username: ${USER_EMAIL}
+    password: ${PASSWORD_EMAIL}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    protocol: smtp
   datasource:
-    url: jdbc:mysql://localhost:3306/demodb?useSSL=false
-    username: root
-    password: root
+    url: ${DB_LINK}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
         format_sql: true
-#        generate_statistics: true
+    #        generate_statistics: true
     hibernate:
       ddl-auto: update
     show-sql: true
@@ -38,9 +50,12 @@ logging:
     org:
       hibernate:
         type: trace
-#    com.mor.backend.controllers : debug
+    #    com.mor.backend.controllers : debug
     web: debug
 #    sql: debug
+slack :
+  oauth:
+    accessToken : ${SLACK_TOKEN}
 demo:
   app:
     jwtSecret: $^x#b9WJr?2viqpL*ky*`#$>7NY~>4nEF?Nz:14W{Uk6~Dg;Xs@At)AEaB30uS

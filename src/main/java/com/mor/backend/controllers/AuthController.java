@@ -1,5 +1,6 @@
 package com.mor.backend.controllers;
 
+import com.github.seratch.jslack.api.methods.SlackApiException;
 import com.mor.backend.common.AuthProvider;
 import com.mor.backend.common.ERole;
 import com.mor.backend.entity.RefreshToken;
@@ -16,10 +17,13 @@ import com.mor.backend.payload.response.TokenRefreshResponse;
 import com.mor.backend.repositories.RoleRepository;
 import com.mor.backend.repositories.UserRepository;
 import com.mor.backend.services.CartService;
+import com.mor.backend.services.EmailService;
+import com.mor.backend.services.SlackService;
 import com.mor.backend.services.impl.RefreshTokenService;
 import com.mor.backend.services.impl.UserDetailsImpl;
 import com.mor.backend.util.jwt.Jwt;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +35,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +47,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @RequestMapping("/api/v1/auth")
 public class AuthController {
+    private final String channelId ="C059WAL6PT4";
     private final AuthenticationManager authenticationManager;
 
     private final UserRepository userRepository;
@@ -53,6 +59,8 @@ public class AuthController {
     private final Jwt jwtUtils;
     private final RefreshTokenService refreshTokenService;
     private final CartService cartService;
+    private final EmailService emailService;
+    private final SlackService slackService;
 
     @PostMapping("/signin")
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -71,7 +79,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) throws SlackApiException, IOException {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
         }
@@ -94,6 +102,8 @@ public class AuthController {
         user.setRoles(roles);
         userRepository.save(user);
         cartService.createCartWithCurrentUser(user);
+        emailService.sendEmail(user.getEmail(),"test mail","Welcome to mail");
+        slackService.sendMessage(channelId,":pepe-saber: User : " + user.getName() + " registered :pepe-saber:");
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 

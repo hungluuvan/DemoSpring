@@ -1,5 +1,6 @@
 package com.mor.backend.util;
 
+import com.mor.backend.exeptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -65,7 +66,7 @@ public class ImageUpload {
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             } else {
-                throw new RuntimeException("Could not read the file!");
+                throw new NotFoundException("The files don't exist");
             }
         } catch (MalformedURLException e) {
             throw new RuntimeException("Error: " + e.getMessage());
